@@ -189,7 +189,7 @@ class QueryParser(object):
             return self.phraseclass(fieldname, texts, boost=boost)
         else:
             if spec == "default":
-                qclass = self.group.qclass
+                qclass = self.group().qclass
             elif spec == "and":
                 qclass = query.And
             elif spec == "or":

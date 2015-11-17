@@ -774,6 +774,26 @@ def test_multitoken_or():
     assert q[1].text == "bacon"
 
 
+def test_multitoken_or_group_factory():
+    textfield = fields.TEXT()
+    assert textfield.multitoken_query == "default"
+    schema = fields.Schema(text=textfield)
+    og = syntax.OrGroup.factory(0.99)
+    parser = default.QueryParser('text', schema, group=og)
+    qstring = u("chaw-bacon")
+
+    texts = list(schema["text"].process_text(qstring))
+    assert texts == ["chaw", "bacon"]
+
+    q = parser.parse(qstring)
+    assert q.__class__ == query.Or
+    assert len(q) == 2
+    assert q[0].__class__ == query.Term
+    assert q[0].text == "chaw"
+    assert q[1].__class__ == query.Term
+    assert q[1].text == "bacon"
+
+
 def test_multitoken_phrase():
     textfield = fields.TEXT()
     textfield.multitoken_query = "phrase"
